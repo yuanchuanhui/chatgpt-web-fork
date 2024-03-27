@@ -5,11 +5,23 @@ import { setupPageGuard } from './permission'
 import { ChatLayout } from '@/views/chat/layout'
 
 const routes: RouteRecordRaw[] = [
-  {
+	{
     path: '/',
     name: 'Root',
+    component: null,
+    redirect: '/login',
+    children: [
+      {
+        path: '/login',
+        name: 'login',
+        component: () => import('@/views/login/index.vue'),
+      },
+    ],
+  },
+  {
+    path: '/chat',
+    name: 'chat',
     component: ChatLayout,
-    redirect: '/chat',
     children: [
       {
         path: '/chat/:uuid?',
@@ -43,7 +55,6 @@ export const router = createRouter({
   routes,
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
-
 setupPageGuard(router)
 
 export async function setupRouter(app: App) {

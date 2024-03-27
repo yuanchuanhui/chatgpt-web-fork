@@ -1,41 +1,40 @@
 import type { AxiosProgressEvent, GenericAbortSignal } from 'axios'
-import { post } from '@/utils/request'
-import { useAuthStore, useSettingStore } from '@/store'
+import { post, get } from '@/utils/request'
+import { useSettingStore,useUserStore,useChatStore } from '@/store'
+// import  getLocalState from '../store/modules/user'
 
-export function fetchChatAPI<T = any>(
-  prompt: string,
-  options?: { conversationId?: string; parentMessageId?: string },
-  signal?: GenericAbortSignal,
-) {
-  return post<T>({
-    url: '/chat',
-    data: { prompt, options },
-    signal,
-  })
-}
+import {verifyLogin,chatcompletion} from './constant'
+// 调用后端接口
 
 export function fetchChatConfig<T = any>() {
   return post<T>({
     url: '/config',
   })
 }
-
+// 聊天内容进程
 export function fetchChatAPIProcess<T = any>(
   params: {
-    prompt: string
+    prompt: string // 当前用户发的消息
     options?: { conversationId?: string; parentMessageId?: string }
     signal?: GenericAbortSignal
     onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void },
 ) {
-  const settingStore = useSettingStore()
-  const authStore = useAuthStore()
 
+  const settingStore = useSettingStore()
+  // const authStore = useAuthStore()
+	const userStore = useUserStore()
+	const chatStore = useChatStore()
+	const uuid= chatStore.getChatHistoryByCurrentActive?.uuid
   let data: Record<string, any> = {
-    prompt: params.prompt,
+    message: params.prompt,
     options: params.options,
+		userId: userStore.userInfo.name, //|| "489107738",
+		password:userStore.userInfo.password, //|| "123123",
+		model:userStore.userInfo.gptModel,
+		sceneId:uuid
   }
 
-  if (authStore.isChatGPTAPI) {
+  if (true) {
     data = {
       ...data,
       systemMessage: settingStore.systemMessage,
@@ -45,7 +44,7 @@ export function fetchChatAPIProcess<T = any>(
   }
 
   return post<T>({
-    url: '/chat-process',
+    url: chatcompletion+`?userId=${data.userId}&&password=${data.password}`,
     data,
     signal: params.signal,
     onDownloadProgress: params.onDownloadProgress,
@@ -63,4 +62,21 @@ export function fetchVerify<T>(token: string) {
     url: '/verify',
     data: { token },
   })
+}
+
+// 验证sever接口
+export async function  verifyUser<T = any>(
+	userInfo: {name:string,password:string}
+	){
+	const {name:userId,password} = userInfo;
+	// console.log('cwj',userId,password);
+	try {
+		return get<T>({
+			url: verifyLogin,
+			data:{userId,password}
+		})
+	} catch (error) {
+			console.log('登陆报错，接口有问题',error)
+	}
+
 }

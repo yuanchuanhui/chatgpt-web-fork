@@ -1,8 +1,8 @@
 <script setup lang='ts'>
-import { computed } from 'vue'
+// import { computed } from 'vue'
 import type { PopoverPlacement } from 'naive-ui'
 import { NTooltip } from 'naive-ui'
-import Button from './Button.vue'
+// import Button from './Button.vue'
 
 interface Props {
   tooltip?: string
@@ -13,14 +13,14 @@ interface Emit {
   (e: 'click'): void
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  tooltip: '',
-  placement: 'bottom',
-})
+// const props = withDefaults(defineProps<Props>(), {
+//   tooltip: '',
+//   placement: 'bottom',
+// })
 
 const emit = defineEmits<Emit>()
 
-const showTooltip = computed(() => Boolean(props.tooltip))
+// const showTooltip = computed(() => Boolean(props.tooltip))
 
 function handleClick() {
   emit('click')
@@ -28,7 +28,7 @@ function handleClick() {
 </script>
 
 <template>
-  <div v-if="showTooltip">
+  <div v-if="false">
     <NTooltip :placement="placement" trigger="hover">
       <template #trigger>
         <Button @click="handleClick">
@@ -38,9 +38,9 @@ function handleClick() {
       {{ tooltip }}
     </NTooltip>
   </div>
-  <div v-else>
+  <!-- <div v-else>
     <Button @click="handleClick">
       <slot />
     </Button>
-  </div>
+  </div> -->
 </template>

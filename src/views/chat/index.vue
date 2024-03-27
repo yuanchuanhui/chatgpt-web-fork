@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { NAutoComplete, NButton, NInput, useDialog, useMessage } from 'naive-ui'
+import { NAutoComplete, NButton, NInput, useDialog, useMessage, NDropdown } from 'naive-ui'
 import html2canvas from 'html2canvas'
 import { Message } from './components'
 import { useScroll } from './hooks/useScroll'
@@ -15,7 +15,7 @@ import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
 import { t } from '@/locales'
-
+import { useUserStore } from '@/store'
 let controller = new AbortController()
 
 const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
@@ -89,6 +89,7 @@ async function onConversation() {
   if (lastContext && usingContext.value)
     options = { ...lastContext }
 
+	// 添加gpt说话框
   addChat(
     +uuid,
     {
@@ -114,6 +115,7 @@ async function onConversation() {
           const xhr = event.target
           const { responseText } = xhr
           // Always process the final line
+
           const lastIndex = responseText.lastIndexOf('\n', responseText.length - 2)
           let chunk = responseText
           if (lastIndex !== -1)
@@ -125,7 +127,7 @@ async function onConversation() {
               dataSources.value.length - 1,
               {
                 dateTime: new Date().toLocaleString(),
-                text: lastText + (data.text ?? ''),
+                text: lastText + (data.data ?? ''),
                 inversion: false,
                 error: false,
                 loading: true,
@@ -136,7 +138,7 @@ async function onConversation() {
 
             if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
               options.parentMessageId = data.id
-              lastText = data.text
+              lastText = data.data
               message = ''
               return fetchChatAPIOnce()
             }
@@ -256,7 +258,7 @@ async function onRegenerate(index: number) {
               index,
               {
                 dateTime: new Date().toLocaleString(),
-                text: lastText + (data.text ?? ''),
+                text: lastText + (data.data ?? ''),
                 inversion: false,
                 error: false,
                 loading: true,
@@ -267,7 +269,7 @@ async function onRegenerate(index: number) {
 
             if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
               options.parentMessageId = data.id
-              lastText = data.text
+              lastText = data.data
               message = ''
               return fetchChatAPIOnce()
             }
@@ -461,6 +463,30 @@ onUnmounted(() => {
   if (loading.value)
     controller.abort()
 })
+const userStore = useUserStore()
+const options = computed(() => {
+  const common = [
+    {
+      label: 'gpt-3.5-turbo-0125',
+      key: 'gpt-3.5-turbo-0125',
+			disabled: userStore.userInfo.gptModel === 'gpt-3.5-turbo-0125',
+    },
+    {
+      label: 'gpt-4-0125-preview',
+      key: 'gpt-4-0125-preview',
+			disabled: userStore.userInfo.gptModel === 'gpt-4-0125-preview',
+    },
+  ]
+  return common
+})
+
+function handleSelect(key:string) {
+
+	userStore.updateUserInfo({
+		gptModel:key,
+	})
+}
+
 </script>
 
 <template>
@@ -473,6 +499,16 @@ onUnmounted(() => {
     />
     <main class="flex-1 overflow-hidden">
       <div id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto">
+				<div class="flex items-center justify-center mt-4">
+						<NDropdown
+							:trigger="isMobile ? 'click' : 'hover'"
+							:options="options"
+							@select="handleSelect"
+						>
+    					<NButton>{{ userStore.userInfo.gptModel }}</NButton>
+  					</NDropdown>
+				</div>
+
         <div
           id="image-wrapper"
           class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
