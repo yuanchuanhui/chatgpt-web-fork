@@ -15,6 +15,7 @@ export function fetchChatConfig<T = any>() {
 export function fetchChatAPIProcess<T = any>(
   params: {
     prompt: string // 当前用户发的消息
+    historyMessage: { message: string; role: string; }[]
     options?: { conversationId?: string; parentMessageId?: string }
     signal?: GenericAbortSignal
     onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void },
@@ -27,6 +28,7 @@ export function fetchChatAPIProcess<T = any>(
 	const uuid= chatStore.getChatHistoryByCurrentActive?.uuid
   let data: Record<string, any> = {
     message: params.prompt,
+    historyMessage: params.historyMessage,
     options: params.options,
 		userId: userStore.userInfo.name, //|| "489107738",
 		password:userStore.userInfo.password, //|| "123123",

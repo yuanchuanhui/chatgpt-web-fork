@@ -58,6 +58,7 @@ function handleSubmit() {
 
 async function onConversation() {
   let message = prompt.value
+  let curHistoryMessage = useChatStore().getChatByUuid(+uuid).map(item => ({message: item.text, role: item.inversion ? "USER": "ASSISTANT"}))
 
   if (loading.value)
     return
@@ -109,6 +110,7 @@ async function onConversation() {
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
+        historyMessage: curHistoryMessage,
         options,
         signal: controller.signal,
         onDownloadProgress: ({ event }) => {
@@ -214,7 +216,8 @@ async function onRegenerate(index: number) {
   const { requestOptions } = dataSources.value[index]
 
   let message = requestOptions?.prompt ?? ''
-
+  let curHistoryMessage = useChatStore().getChatByUuid(+uuid).map(item => ({message: item.text, role: item.inversion ? "USER": "ASSISTANT"}))
+  
   let options: Chat.ConversationRequest = {}
 
   if (requestOptions.options)
@@ -241,6 +244,7 @@ async function onRegenerate(index: number) {
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
+        historyMessage: curHistoryMessage,
         options,
         signal: controller.signal,
         onDownloadProgress: ({ event }) => {

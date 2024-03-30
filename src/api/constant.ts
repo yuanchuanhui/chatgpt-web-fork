@@ -1,4 +1,4 @@
-export const host= 'http://149.28.227.204:8080';
+export const host= 'http://chatgptych.online:8080';
 export const verifyLogin= `${host}/login`;
 export const listScene = `${host}/list/scene`;
 export const createScene = `${host}/create/scene`;
