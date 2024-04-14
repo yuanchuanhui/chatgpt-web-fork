@@ -15,6 +15,7 @@ export function fetchChatConfig<T = any>() {
 export function fetchChatAPIProcess<T = any>(
   params: {
     prompt: string // 当前用户发的消息
+    targetRole: string // 目标角色
     historyMessage: { message: string; role: string; }[]
     options?: { conversationId?: string; parentMessageId?: string }
     signal?: GenericAbortSignal
@@ -29,6 +30,7 @@ export function fetchChatAPIProcess<T = any>(
   let data: Record<string, any> = {
     message: params.prompt,
     historyMessage: params.historyMessage,
+    targetRole: userStore.userInfo.targetRole,
     options: params.options,
 		userId: userStore.userInfo.name, //|| "489107738",
 		password:userStore.userInfo.password, //|| "123123",

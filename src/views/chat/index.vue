@@ -110,6 +110,7 @@ async function onConversation() {
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
+        targetRole: userStore.userInfo.targetRole,
         historyMessage: curHistoryMessage,
         options,
         signal: controller.signal,
@@ -244,6 +245,7 @@ async function onRegenerate(index: number) {
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
+        targetRole: userStore.userInfo.targetRole,
         historyMessage: curHistoryMessage,
         options,
         signal: controller.signal,
@@ -468,27 +470,30 @@ onUnmounted(() => {
     controller.abort()
 })
 const userStore = useUserStore()
-const options = computed(() => {
+const targetRoles = computed(() => {
   const common = [
     {
-      label: 'gpt-3.5-turbo-0125',
-      key: 'gpt-3.5-turbo-0125',
-			disabled: userStore.userInfo.gptModel === 'gpt-3.5-turbo-0125',
+      label: '哈利波特',
+      key: '哈利波特',
+			disabled: userStore.userInfo.targetRole === '哈利波特',
     },
     {
-      label: 'gpt-4-0125-preview',
-      key: 'gpt-4-0125-preview',
-			disabled: userStore.userInfo.gptModel === 'gpt-4-0125-preview',
+      label: '伏地魔',
+      key: '伏地魔',
+			disabled: userStore.userInfo.targetRole === '伏地魔'
+    },
+    {
+      label: '无角色',
+      key: '无角色',
+			disabled: userStore.userInfo.targetRole === '无角色'
     },
   ]
   return common
 })
-
-function handleSelect(key:string) {
-
-	userStore.updateUserInfo({
-		gptModel:key,
-	})
+function handleSelectRole(key:string) {
+userStore.updateUserInfo({
+  targetRole:key
+})
 }
 
 </script>
@@ -504,12 +509,12 @@ function handleSelect(key:string) {
     <main class="flex-1 overflow-hidden">
       <div id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto">
 				<div class="flex items-center justify-center mt-4">
-						<NDropdown
+            <NDropdown
 							:trigger="isMobile ? 'click' : 'hover'"
-							:options="options"
-							@select="handleSelect"
+							:options="targetRoles"
+							@select="handleSelectRole"
 						>
-    					<NButton>{{ userStore.userInfo.gptModel }}</NButton>
+    					<NButton>{{ userStore.userInfo.targetRole }}</NButton>
   					</NDropdown>
 				</div>
 

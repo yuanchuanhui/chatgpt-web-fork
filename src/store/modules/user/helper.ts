@@ -8,7 +8,8 @@ export interface UserInfo {
   name: string
   description: string
 	password: string
-	gptModel: string
+	gptModel: string,
+  targetRole: string
 }
 
 export interface UserState {
@@ -22,7 +23,8 @@ export function defaultSetting(): UserState {
       name: '某某人',
       description: '暂无介绍',
 			password:'123456',
-			gptModel:'gpt-3.5-turbo-0125'
+			gptModel:'gpt-3.5-turbo-0125',
+      targetRole: '无角色'
     },
   }
 }

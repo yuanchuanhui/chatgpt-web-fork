@@ -6,10 +6,35 @@ import {verifyUser} from '@/api/index'
 import { useUserStore } from '@/store'
 const router = useRouter()
 const userStore = useUserStore()
+// 获取当前页面的URL
+function getQueryParam(url: string, paramName: string) {
+  // 从URL中提取查询字符串部分
+  const queryString = url.split('?')[1];
+  if (!queryString) {
+    return null;
+  }
+
+  // 使用&符号分割查询字符串
+  const params = queryString.split('&');
+
+  // 遍历参数数组
+  for (let i = 0; i < params.length; i++) {
+    // 使用=符号分割参数名称和参数值
+    const pair = params[i].split('=');
+    if (pair[0] === paramName) {
+      // 如果找到匹配的参数名称，返回解码后的参数值
+      return decodeURIComponent(pair[1]);
+    }
+  }
+
+  // 如果没有找到匹配的参数，返回null
+  return null;
+}
 const formData = ref({
-      name: '',
-      password: ''
+      name: getQueryParam(window.location.href, 'userId'),
+      password: getQueryParam(window.location.href, 'password')
     });
+
 
 async function goHome() {
 	// 获取表单数据
@@ -41,7 +66,7 @@ async function goHome() {
     <div class="lg:bg-white lg:w-1/2 lg:p-8 lg:py-16 lg:px-12 space-y-7 marlene-rounded-l-lg shadow-sm w-max p-8 marlene-bg-glass-ex">
       <div class="space-y-3.5">
         <p class="mb-2 text-primary text-4xl">登录</p>
-        <p class="text-blue-gray">每一次登录都是与你の邂逅。</p>
+        <p class="text-blue-gray">window.location.href</p>
       </div>
       <form class="space-y-8">
         <div class="space-y-6">

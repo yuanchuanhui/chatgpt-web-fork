@@ -18,7 +18,6 @@ const userInfo = computed(() => userStore.userInfo)
           size="large"
           round
           :src="userInfo.avatar"
-          :fallback-src="defaultAvatar"
         />
       </template>
       <template v-else>
