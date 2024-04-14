@@ -24,7 +24,7 @@ export function defaultSetting(): UserState {
       description: '暂无介绍',
 			password:'123456',
 			gptModel:'gpt-3.5-turbo-0125',
-      targetRole: '无角色'
+      targetRole: '哈利波特'
     },
   }
 }
