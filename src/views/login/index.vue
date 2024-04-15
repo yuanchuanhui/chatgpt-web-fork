@@ -32,7 +32,8 @@ function getQueryParam(url: string, paramName: string) {
 }
 const formData = ref({
       name: getQueryParam(window.location.href, 'userId'),
-      password: getQueryParam(window.location.href, 'password')
+      password: getQueryParam(window.location.href, 'password'),
+      targetRole:getQueryParam(window.location.href, 'targetRole')
     });
 
 
@@ -47,7 +48,8 @@ async function goHome() {
 	if(canLogin){
 		userStore.updateUserInfo({
 			name:formData.value.name,
-			password:formData.value.password
+			password:formData.value.password,
+      targetRole:formData.value.targetRole
 		})
 		router.push('/chat')
 
@@ -66,7 +68,6 @@ async function goHome() {
     <div class="lg:bg-white lg:w-1/2 lg:p-8 lg:py-16 lg:px-12 space-y-7 marlene-rounded-l-lg shadow-sm w-max p-8 marlene-bg-glass-ex">
       <div class="space-y-3.5">
         <p class="mb-2 text-primary text-4xl">登录</p>
-        <p class="text-blue-gray">window.location.href</p>
       </div>
       <form class="space-y-8">
         <div class="space-y-6">
