@@ -3,7 +3,7 @@ import { post, get } from '@/utils/request'
 import { useSettingStore,useUserStore,useChatStore } from '@/store'
 // import  getLocalState from '../store/modules/user'
 
-import {verifyLogin,chatcompletion} from './constant'
+import {verifyLogin, chatcompletion, register} from './constant'
 // 调用后端接口
 
 export function fetchChatConfig<T = any>() {
@@ -69,7 +69,7 @@ export function fetchVerify<T>(token: string) {
 }
 
 // 验证sever接口
-export async function  verifyUser<T = any>(
+export async function verifyUser<T = any>(
 	userInfo: {name:string,password:string}
 	){
 	const {name:userId,password} = userInfo;
@@ -81,6 +81,22 @@ export async function  verifyUser<T = any>(
 		})
 	} catch (error) {
 			console.log('登陆报错，接口有问题',error)
+	}
+
+}
+
+export async function registerUser<T = any>(
+	userInfo: {email:string,password:string}
+){
+	const {email,password} = userInfo;
+	// console.log('cwj',userId,password);
+	try {
+		return get<T>({
+			url: register,
+			data:{email,password}
+		})
+	} catch (error) {
+		console.log('注册失败，原因为：' + error)
 	}
 
 }
