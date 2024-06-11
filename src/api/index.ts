@@ -48,7 +48,7 @@ export function fetchChatAPIProcess<T = any>(
   }
 
   return post<T>({
-    url: chatcompletion+`?userId=${data.userId}&&password=${data.password}`,
+    url: chatcompletion+`?userId=${data.userId}&targetRole=${data.targetRole}&password=${data.password}`,
     data,
     signal: params.signal,
     onDownloadProgress: params.onDownloadProgress,
