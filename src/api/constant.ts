@@ -1,4 +1,4 @@
-export const host= 'http://' + window.location.hostname + ':8080';
+export const host= 'http://' + window.location.hostname + ':8083';
 // export const host= 'http://chatgptych.online:8080';
 export const verifyLogin= `${host}/login`;
 export const register= `${host}/register`;

@@ -96,7 +96,7 @@ export async function registerUser<T = any>(
 			data:{email,password}
 		})
 	} catch (error) {
-		console.log('注册失败，原因为：' + error)
+		alert('注册失败，原因为：' + error)
 	}
 
 }

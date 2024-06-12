@@ -85,7 +85,7 @@ async function register() {
 			alert('注册失败')
 		}
 	} catch (error) {
-		console.log('接口返回数据处理异常',error)
+		alert(error.data)
 	}
 }
 
